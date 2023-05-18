@@ -8,7 +8,7 @@
 
     let settings = {
         battleName: '',
-        stepsPerSecond: 2,
+        stepsPerSecond: 20,
         width: '640',
         height: '480',
         agents: 100,
@@ -34,8 +34,8 @@
         />
         <RangeInput
             step={2}
-            min={1}
-            max={30}
+            min={5}
+            max={60}
             bind:value={settings.stepsPerSecond}
             label="Steps per second"
         />

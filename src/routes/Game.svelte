@@ -206,7 +206,7 @@
                 checkWin()
             } else {
             }
-        }, (1 / speed) * 100)
+        }, (1 / speed) * 1000)
 
         function checkWin(): boolean {
             let firstType = agents[0].type
