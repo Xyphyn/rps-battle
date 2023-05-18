@@ -45,7 +45,38 @@
             let closestAgent: Agent
 
             for (const agent of agents) {
-                if (agent == this || agent.type == this.type) continue
+                if (
+                    agent == this ||
+                    agent.type == this.type ||
+                    !this.canAttack(agent.type)
+                )
+                    continue
+
+                const distance = Math.sqrt(
+                    Math.abs(agent.x - this.x) ** 2 +
+                        Math.abs(agent.y - this.y) ** 2
+                )
+                if (distance < minDistance) {
+                    minDistance = distance
+
+                    closestAgent = agent
+                }
+            }
+
+            return closestAgent
+        }
+
+        findAvoid(agents: Agent[]): Agent {
+            let minDistance = Infinity
+            let closestAgent: Agent
+
+            for (const agent of agents) {
+                if (
+                    agent == this ||
+                    agent.type == this.type ||
+                    this.canAttack(agent.type)
+                )
+                    continue
 
                 const distance = Math.sqrt(
                     Math.abs(agent.x - this.x) ** 2 +
@@ -77,7 +108,13 @@
                 }
             }
 
-            // If there still is no target, move randomly
+            // If there still is no target, move away
+            const speed = this.target ? 2 : -1
+
+            if (!this.target) {
+                this.target = this.findAvoid(agents)
+            }
+
             if (!this.target) {
                 return
             }
@@ -90,13 +127,17 @@
             const angle = Math.atan2(dy, dx)
 
             // Calculate the x and y components of the movement vector
-            const speed = 2
             const vx = speed * Math.cos(angle)
             const vy = speed * Math.sin(angle)
 
             // Move the agent towards the target point
-            this.x += vx
-            this.y += vy
+            if (this.x + vx < width && this.x + vx > 0) {
+                this.x += vx
+            }
+
+            if (this.y + vy < height && this.y + vy > 0) {
+                this.y += vy
+            }
         }
     }
 

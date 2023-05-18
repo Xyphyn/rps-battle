@@ -5,12 +5,3 @@
 <main class="container">
     <Game agentCount={200} />
 </main>
-
-<style>
-    .container {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-</style>
