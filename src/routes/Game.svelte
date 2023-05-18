@@ -233,8 +233,8 @@
     />
     {#if !playing}
         <p>{agents[0]?.type} wins wooooo</p>
-        <Button onclick={() => (menu = true)} color={Color.accent}>
-            Return to menu
-        </Button>
     {/if}
+    <Button onclick={() => (menu = true)} color={Color.accent}>
+        Return to menu
+    </Button>
 </div>

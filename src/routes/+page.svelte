@@ -46,21 +46,31 @@
             bind:value={settings.agents}
             label="Agent count"
         />
-        <div class="flex flex-row gap-4">
+        <div class="flex flex-col gap-4 md:flex-row">
             <TextInput
                 label="Game width"
                 placeholder="640"
                 bind:value={settings.width}
                 type="number"
-                class="flex-1"
+                class="md:flex-1"
             />
             <TextInput
                 label="Game height"
                 placeholder="480"
                 bind:value={settings.height}
                 type="number"
-                class="flex-1"
+                class="md:flex-1"
             />
+            <Button
+                class="h-11 md:flex-1 md:self-end"
+                color={Color.ghost}
+                onclick={() => {
+                    settings.width = `${document.body.clientWidth - 50}`
+                    settings.height = `${document.body.clientHeight - 200}`
+                }}
+            >
+                Screen size
+            </Button>
         </div>
         <Button submit color={Color.accent} class="justify-center h-10">
             Start!
