@@ -174,6 +174,10 @@
 
     let agents: Agent[] = []
 
+    let rocks = 0
+    let scissors = 0
+    let papers = 0
+
     onMount(async () => {
         playing = true
         menu = false
@@ -226,6 +230,23 @@
             if (playing) {
                 context.clearRect(0, 0, width, height)
                 draw()
+
+                let counts = {
+                    scissors: 0,
+                    paper: 0,
+                    rock: 0,
+                }
+
+                for (const agent of agents) {
+                    const type = agent.type
+
+                    counts[type]++
+                }
+
+                scissors = counts.scissors
+                papers = counts.paper
+                rocks = counts.rock
+
                 checkWin()
             } else {
             }
@@ -246,8 +267,13 @@
     })
 </script>
 
-<div class="flex flex-col gap-8 justify-center items-center">
+<div class="flex flex-col gap-4 justify-center items-center">
     <p class="text-3xl font-bold">{name || 'RPS battle'}</p>
+    <p class="flex flex-row gap-4">
+        <span>📜 {papers}</span>
+        <span>✂️ {scissors}</span>
+        <span>🪨 {rocks}</span>
+    </p>
     <canvas
         {width}
         {height}
