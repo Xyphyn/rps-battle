@@ -102,9 +102,7 @@
         }
 
         updatePosition(agents: Agent[]) {
-            // if (!this.target || !this.canAttack(this.target.type)) {
             this.target = this.findTarget(agents)
-            // }
 
             for (const agent of agents) {
                 const distance = Math.sqrt(
@@ -112,16 +110,12 @@
                         Math.abs(agent.y - this.y) ** 2
                 )
 
-                if (distance < 30 && agent.canAttack(this.type)) {
+                if (distance < 20 && agent.canAttack(this.type)) {
                     this.type = agent.type
                 }
             }
 
             const avoid = this.findAvoid(agents)
-
-            if (!this.target) {
-                return
-            }
 
             const speed = 2
 
@@ -148,9 +142,15 @@
                 }
             }
 
-            {
-                const dx = this.target.x - this.x
-                const dy = this.target.y - this.y
+            if (this.target) {
+                const dx =
+                    this.target.x -
+                    this.x +
+                    (experimentalAI ? Math.random() * 20 : 0)
+                const dy =
+                    this.target.y -
+                    this.y +
+                    (experimentalAI ? Math.random() * 20 : 0)
                 const distance = Math.sqrt(dx * dx + dy * dy)
 
                 // Calculate the angle between the agent and the target point
@@ -202,7 +202,7 @@
 
         // @ts-ignore
         const context = canvas.getContext('2d')
-        context.font = '24px sans-serif'
+        context.font = '20px sans-serif'
 
         function draw() {
             for (const agent of agents) {
