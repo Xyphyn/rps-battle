@@ -8,6 +8,7 @@
     export let name = ''
     export let speed: number
     export let agentCount: number
+    export let experimentalAI: boolean
 
     let playing = false
 
@@ -75,7 +76,7 @@
         }
 
         findAvoid(agents: Agent[]): Agent | undefined {
-            let minDistance = Infinity
+            let minDistance = 100
             let closestAgent: Agent | undefined
 
             for (const agent of agents) {
@@ -101,9 +102,9 @@
         }
 
         updatePosition(agents: Agent[]) {
-            if (!this.target || !this.canAttack(this.target.type)) {
-                this.target = this.findTarget(agents)
-            }
+            // if (!this.target || !this.canAttack(this.target.type)) {
+            this.target = this.findTarget(agents)
+            // }
 
             for (const agent of agents) {
                 const distance = Math.sqrt(
@@ -116,42 +117,64 @@
                 }
             }
 
-            // If there still is no target, move away
-            const speed = this.target ? 2 : -1
-
-            if (!this.target) {
-                this.target = this.findAvoid(agents)
-            }
+            const avoid = this.findAvoid(agents)
 
             if (!this.target) {
                 return
             }
 
-            const dx = this.target.x - this.x
-            const dy = this.target.y - this.y
-            const distance = Math.sqrt(dx * dx + dy * dy)
+            const speed = 2
 
-            // Calculate the angle between the agent and the target point
-            const angle = Math.atan2(dy, dx)
+            // Avoid the predators with a higher priority
+            if (avoid && experimentalAI) {
+                const dx = avoid.x - this.x
+                const dy = avoid.y - this.y
+                const distance = Math.sqrt(dx * dx + dy * dy)
 
-            // Calculate the x and y components of the movement vector
-            const vx = speed * Math.cos(angle)
-            const vy = speed * Math.sin(angle)
+                // Calculate the angle between the agent and the target point
+                const angle = Math.atan2(dy, dx)
 
-            // Move the agent towards the target point
-            if (this.x + vx < width && this.x + vx > 0) {
-                this.x += vx
+                // Calculate the x and y components of the movement vector
+                const vx = speed * -1 * Math.cos(angle)
+                const vy = speed * -1 * Math.sin(angle)
+
+                // Move the agent towards the target point
+                if (this.x + vx < width && this.x + vx > 0) {
+                    this.x += vx
+                }
+
+                if (this.y + vy < height && this.y + vy > 0) {
+                    this.y += vy
+                }
             }
 
-            if (this.y + vy < height && this.y + vy > 0) {
-                this.y += vy
+            {
+                const dx = this.target.x - this.x
+                const dy = this.target.y - this.y
+                const distance = Math.sqrt(dx * dx + dy * dy)
+
+                // Calculate the angle between the agent and the target point
+                const angle = Math.atan2(dy, dx)
+
+                // Calculate the x and y components of the movement vector
+                const vx = speed * Math.cos(angle)
+                const vy = speed * Math.sin(angle)
+
+                // Move the agent towards the target point
+                if (this.x + vx < width && this.x + vx > 0) {
+                    this.x += vx
+                }
+
+                if (this.y + vy < height && this.y + vy > 0) {
+                    this.y += vy
+                }
             }
         }
     }
 
     let agents: Agent[] = []
 
-    onMount(() => {
+    onMount(async () => {
         playing = true
         menu = false
 
@@ -234,7 +257,9 @@
     {#if !playing}
         <p>{agents[0]?.type} wins wooooo</p>
     {/if}
-    <Button onclick={() => (menu = true)} color={Color.accent}>
-        Return to menu
-    </Button>
+    <div class="flex flex-row">
+        <Button onclick={() => (menu = true)} color={Color.accent}>
+            Return to menu
+        </Button>
+    </div>
 </div>

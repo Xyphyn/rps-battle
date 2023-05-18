@@ -1,6 +1,7 @@
 <script>
     import Stopwatch from '$lib/Stopwatch.svelte'
     import RangeInput from '$lib/ui/input/RangeInput.svelte'
+    import SwitchInput from '$lib/ui/input/SwitchInput.svelte'
     import TextInput from '$lib/ui/input/TextInput.svelte'
     import Button from '../lib/ui/Button.svelte'
     import { Color } from '../lib/ui/colors'
@@ -12,6 +13,7 @@
         width: '640',
         height: '480',
         agents: 100,
+        experimentalAI: true,
     }
 
     let menu = true
@@ -72,6 +74,16 @@
                 Screen size
             </Button>
         </div>
+        <div class="flex flex-row gap-2 items-center">
+            <SwitchInput bind:enabled={settings.experimentalAI} />
+            <div class="flex flex-col">
+                <span class="block text-sm font-bold">Experimental AI</span>
+                <span class="text-xs opacity-80">
+                    Agents are more cautious when attacking "prey", avoiding
+                    "predators" along the way.
+                </span>
+            </div>
+        </div>
         <Button submit color={Color.accent} class="justify-center h-10">
             Start!
         </Button>
@@ -83,6 +95,7 @@
         speed={settings.stepsPerSecond}
         name={settings.battleName}
         agentCount={settings.agents}
+        experimentalAI={settings.experimentalAI}
         bind:menu
     />
 {/if}
