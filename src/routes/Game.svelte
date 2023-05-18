@@ -1,12 +1,17 @@
 <script lang="ts">
+    import Button from '$lib/ui/Button.svelte'
+    import { Color } from '$lib/ui/colors'
     import { onMount } from 'svelte/internal'
 
     export let width: number
     export let height: number
     export let name = ''
     export let speed: number
+    export let agentCount: number
 
     let playing = false
+
+    export let menu = true
 
     type AgentType = 'rock' | 'paper' | 'scissors'
 
@@ -144,18 +149,15 @@
         }
     }
 
-    export let agentCount = 50
+    let agents: Agent[] = []
 
     onMount(() => {
         playing = true
+        menu = false
 
-        const agents = [
-            new Agent(50, 50, 'paper'),
-            new Agent(100, 150, 'rock'),
-            new Agent(200, 100, 'scissors'),
-        ]
+        agents = []
 
-        for (let i = 1; i <= agentCount - 3; i++) {
+        for (let i = 1; i <= agentCount; i++) {
             const random = i % 3
 
             agents.push(
@@ -197,14 +199,27 @@
             }
         }
 
-        setInterval((id: number) => {
+        const interval = setInterval(() => {
             if (playing) {
                 context.clearRect(0, 0, width, height)
                 draw()
+                checkWin()
             } else {
-                clearInterval(id)
             }
         }, (1 / speed) * 100)
+
+        function checkWin(): boolean {
+            let firstType = agents[0].type
+
+            for (const agent of agents) {
+                if (agent.type != firstType) return false
+            }
+
+            clearInterval(interval)
+            playing = false
+
+            return true
+        }
     })
 </script>
 
@@ -216,4 +231,10 @@
         id="canvas"
         class="rounded-xl border border-dashed border-black/50 dark:border-white/50"
     />
+    {#if !playing}
+        <p>{agents[0]?.type} wins wooooo</p>
+        <Button onclick={() => (menu = true)} color={Color.accent}>
+            Return to menu
+        </Button>
+    {/if}
 </div>

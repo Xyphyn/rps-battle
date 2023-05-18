@@ -1,4 +1,5 @@
 <script>
+    import Stopwatch from '$lib/Stopwatch.svelte'
     import RangeInput from '$lib/ui/input/RangeInput.svelte'
     import TextInput from '$lib/ui/input/TextInput.svelte'
     import Button from '../lib/ui/Button.svelte'
@@ -7,18 +8,23 @@
 
     let settings = {
         battleName: '',
-        stepsPerSecond: 5,
+        stepsPerSecond: 2,
         width: '640',
         height: '480',
+        agents: 100,
     }
 
-    let gameRunning = false
+    let menu = true
+
+    function start() {
+        menu = false
+    }
 </script>
 
-{#if !gameRunning}
+{#if menu}
     <form
-        class="flex flex-col gap-8 p-8 mx-auto max-w-xl rounded-md shadow-md bg-zinc-900"
-        on:submit|preventDefault={() => (gameRunning = true)}
+        class="flex flex-col gap-8 p-8 mx-auto max-w-xl bg-white rounded-md shadow-md dark:bg-zinc-900"
+        on:submit|preventDefault={start}
     >
         <h1 class="mx-auto text-4xl font-bold">RPS Battle</h1>
         <TextInput
@@ -32,6 +38,13 @@
             max={30}
             bind:value={settings.stepsPerSecond}
             label="Steps per second"
+        />
+        <RangeInput
+            step={1}
+            min={5}
+            max={300}
+            bind:value={settings.agents}
+            label="Agent count"
         />
         <div class="flex flex-row gap-4">
             <TextInput
@@ -59,5 +72,7 @@
         height={Number(settings.height)}
         speed={settings.stepsPerSecond}
         name={settings.battleName}
+        agentCount={settings.agents}
+        bind:menu
     />
 {/if}
