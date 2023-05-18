@@ -129,8 +129,8 @@
                 const angle = Math.atan2(dy, dx)
 
                 // Calculate the x and y components of the movement vector
-                const vx = speed * -1 * Math.cos(angle)
-                const vy = speed * -1 * Math.sin(angle)
+                const vx = speed * -1.5 * Math.cos(angle)
+                const vy = speed * -1.5 * Math.sin(angle)
 
                 // Move the agent towards the target point
                 if (this.x + vx < width && this.x + vx > 0) {

@@ -87,6 +87,15 @@
         <Button submit color={Color.accent} class="justify-center h-10">
             Start!
         </Button>
+        <hr class="w-[80%] mx-auto opacity-30" />
+        <p class="mx-auto text-sm opacity-40">
+            Leave feedback on the <a
+                href="https://github.com/Xyphyn/rps-battle"
+                class="text-white underline"
+            >
+                GitHub
+            </a>
+        </p>
     </form>
 {:else}
     <Game
