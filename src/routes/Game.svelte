@@ -1,16 +1,19 @@
 <script lang="ts">
-    import { Canvas, Layer, t } from 'svelte-canvas'
     import { onMount } from 'svelte/internal'
 
-    let width = document.body.clientWidth
-    let height = document.body.clientHeight
+    export let width: number
+    export let height: number
+    export let name = ''
+    export let speed: number
+
+    let playing = false
 
     type AgentType = 'rock' | 'paper' | 'scissors'
 
     class Agent {
         x: number
         y: number
-        target: Agent
+        target: Agent | undefined
         type: AgentType
 
         constructor(x: number, y: number, type: AgentType) {
@@ -40,9 +43,9 @@
             return attackableType == type
         }
 
-        findTarget(agents: Agent[]): Agent {
+        findTarget(agents: Agent[]): Agent | undefined {
             let minDistance = Infinity
-            let closestAgent: Agent
+            let closestAgent: Agent | undefined
 
             for (const agent of agents) {
                 if (
@@ -66,9 +69,9 @@
             return closestAgent
         }
 
-        findAvoid(agents: Agent[]): Agent {
+        findAvoid(agents: Agent[]): Agent | undefined {
             let minDistance = Infinity
-            let closestAgent: Agent
+            let closestAgent: Agent | undefined
 
             for (const agent of agents) {
                 if (
@@ -143,33 +146,36 @@
 
     export let agentCount = 50
 
-    const agents = [
-        new Agent(50, 50, 'paper'),
-        new Agent(100, 150, 'rock'),
-        new Agent(200, 100, 'scissors'),
-    ]
-
-    for (let i = 1; i <= agentCount - 3; i++) {
-        const random = i % 3
-
-        agents.push(
-            new Agent(
-                Math.random() * (width - 40 + 20),
-                Math.random() * (height - 40 + 20),
-                random == 0
-                    ? 'paper'
-                    : random == 1
-                    ? 'rock'
-                    : random == 2
-                    ? 'scissors'
-                    : 'scissors'
-            )
-        )
-    }
-
     onMount(() => {
+        playing = true
+
+        const agents = [
+            new Agent(50, 50, 'paper'),
+            new Agent(100, 150, 'rock'),
+            new Agent(200, 100, 'scissors'),
+        ]
+
+        for (let i = 1; i <= agentCount - 3; i++) {
+            const random = i % 3
+
+            agents.push(
+                new Agent(
+                    Math.random() * (width - 40 + 20),
+                    Math.random() * (height - 40 + 20),
+                    random == 0
+                        ? 'paper'
+                        : random == 1
+                        ? 'rock'
+                        : random == 2
+                        ? 'scissors'
+                        : 'scissors'
+                )
+            )
+        }
+
         const canvas = document.getElementById('canvas')
 
+        // @ts-ignore
         const context = canvas.getContext('2d')
         context.font = '24px sans-serif'
 
@@ -191,11 +197,23 @@
             }
         }
 
-        setInterval(() => {
-            context.clearRect(0, 0, width, height)
-            draw()
-        }, 50)
+        setInterval((id: number) => {
+            if (playing) {
+                context.clearRect(0, 0, width, height)
+                draw()
+            } else {
+                clearInterval(id)
+            }
+        }, (1 / speed) * 100)
     })
 </script>
 
-<canvas {width} {height} id="canvas" />
+<div class="flex flex-col gap-8 justify-center items-center">
+    <p class="text-3xl font-bold">{name || 'RPS battle'}</p>
+    <canvas
+        {width}
+        {height}
+        id="canvas"
+        class="rounded-xl border border-dashed border-black/50 dark:border-white/50"
+    />
+</div>
